@@ -1,5 +1,5 @@
 import gleam/io
-import gleam/iterator.{type Iterator}
+import gleam/iterator
 import gleam/option.{type Option}
 import stdin
 
@@ -13,12 +13,13 @@ pub fn apply_pair(pair: #(a, b), fun: fn(a, b) -> c) -> c {
 }
 
 pub fn run_solutions(
-  parser: fn(Iterator(String)) -> input,
+  parser: fn(List(String)) -> input,
   solve_a: fn(input) -> Option(String),
   solve_b: fn(input) -> Option(String),
 ) {
   let input =
     stdin.stdin()
+    |> iterator.to_list()
     |> parser()
 
   let solution_a =

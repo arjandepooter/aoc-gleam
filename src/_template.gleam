@@ -5,7 +5,7 @@ import helpers
 type Input =
   String
 
-fn parse(data: Iterator(String)) -> Input {
+fn parse(data: List(String)) -> Input {
   todo
 }
 

@@ -1,5 +1,5 @@
 import gleam/int
-import gleam/iterator.{type Iterator}
+import gleam/iterator
 import gleam/list
 import gleam/option.{type Option}
 import gleam/pair
@@ -10,9 +10,8 @@ import helpers
 type Input =
   List(Int)
 
-fn parse(data: Iterator(String)) -> Input {
+fn parse(data: List(String)) -> Input {
   data
-  |> iterator.to_list()
   |> list.flat_map(fn(s) {
     s
     |> string.split(" ")

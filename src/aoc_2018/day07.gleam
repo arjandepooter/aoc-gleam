@@ -1,6 +1,5 @@
 import gleam/dict
 import gleam/int
-import gleam/iterator.{type Iterator}
 import gleam/list
 import gleam/option
 import gleam/result
@@ -33,15 +32,15 @@ fn parse_line(line: String) -> option.Option(#(String, String)) {
   }
 }
 
-fn parse(data: Iterator(String)) -> Input {
+fn parse(data: List(String)) -> Input {
   let dependencies =
     data
-    |> iterator.map(fn(str) {
+    |> list.map(fn(str) {
       str
       |> string.trim()
       |> parse_line()
     })
-    |> iterator.fold(dict.new(), fn(acc, items) {
+    |> list.fold(dict.new(), fn(acc, items) {
       case items {
         option.Some(items) -> {
           let #(first, second) = items
