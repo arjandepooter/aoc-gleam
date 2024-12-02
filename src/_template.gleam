@@ -1,4 +1,3 @@
-import gleam/iterator.{type Iterator}
 import gleam/option.{type Option}
 import helpers
 
