@@ -1,3 +1,4 @@
+import gleam/function
 import gleam/int
 import gleam/list
 import gleam/option.{type Option}
@@ -29,13 +30,11 @@ fn is_safe(report: List(Int)) -> Bool {
     report -> report
   }
 
-  report
-  |> list.zip(list.drop(report, 1))
-  |> list.all(fn(pair) {
-    let #(a, b) = pair
-
+  {
+    use a, b <- list.map2(report, list.drop(report, 1))
     a < b && b - a <= 3
-  })
+  }
+  |> list.all(function.identity)
 }
 
 fn solve_a(input: Input) -> Option(String) {
