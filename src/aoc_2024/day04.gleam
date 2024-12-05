@@ -1,7 +1,6 @@
 import gleam/dict.{type Dict}
 import gleam/function
 import gleam/int
-import gleam/io
 import gleam/list
 import gleam/option.{type Option}
 import gleam/result

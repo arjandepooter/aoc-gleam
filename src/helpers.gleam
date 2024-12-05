@@ -1,15 +1,12 @@
 import gleam/io
 import gleam/iterator
+import gleam/list
 import gleam/option.{type Option}
+import gleam/string
 import stdin
 
 pub fn tee(arg: in, fn1: fn(in) -> out1, fn2: fn(in) -> out2) -> #(out1, out2) {
   #(fn1(arg), fn2(arg))
-}
-
-pub fn apply_pair(pair: #(a, b), fun: fn(a, b) -> c) -> c {
-  let #(a, b) = pair
-  fun(a, b)
 }
 
 pub fn run_solutions(
@@ -20,6 +17,7 @@ pub fn run_solutions(
   let input =
     stdin.stdin()
     |> iterator.to_list()
+    |> list.map(string.trim_end)
     |> parser()
 
   let solution_a =
