@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-24.11-darwin";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
   outputs =
@@ -18,10 +18,8 @@
       {
         devShells.default = mkShell {
           packages = [
-            erlang
+            erlang_27
             gleam
-            watchexec
-            just
           ];
         };
       }

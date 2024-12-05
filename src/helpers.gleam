@@ -1,12 +1,25 @@
+import gleam/dynamic
 import gleam/io
-import gleam/iterator
 import gleam/list
 import gleam/option.{type Option}
+import gleam/result
 import gleam/string
-import stdin
+import gleam/yielder
 
-pub fn tee(arg: in, fn1: fn(in) -> out1, fn2: fn(in) -> out2) -> #(out1, out2) {
-  #(fn1(arg), fn2(arg))
+@external(erlang, "io", "get_line")
+fn ffi_read_line(prompt: String) -> dynamic.Dynamic
+
+fn read_line() -> Result(String, Nil) {
+  ffi_read_line("")
+  |> dynamic.from()
+  |> dynamic.string()
+  |> result.replace_error(Nil)
+}
+
+fn stdin() -> yielder.Yielder(String) {
+  yielder.repeatedly(read_line)
+  |> yielder.take_while(result.is_ok)
+  |> yielder.map(result.unwrap(_, ""))
 }
 
 pub fn run_solutions(
@@ -15,8 +28,8 @@ pub fn run_solutions(
   solve_b: fn(input) -> Option(String),
 ) {
   let input =
-    stdin.stdin()
-    |> iterator.to_list()
+    stdin()
+    |> yielder.to_list()
     |> list.map(string.trim_end)
     |> parser()
 

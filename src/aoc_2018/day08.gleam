@@ -1,10 +1,10 @@
 import gleam/int
-import gleam/iterator
 import gleam/list
 import gleam/option.{type Option}
 import gleam/pair
 import gleam/result
 import gleam/string
+import gleam/yielder
 import helpers
 
 type Input =
@@ -32,9 +32,9 @@ fn parse_tree(input: List(Int)) -> #(Int, Node) {
   let assert [n_children, n_metadata, ..rest] = input
 
   let #(consumed, child_nodes) =
-    iterator.repeat(Nil)
-    |> iterator.take(n_children)
-    |> iterator.fold(#(0, []), fn(acc: #(Int, List(Node)), _) {
+    yielder.repeat(Nil)
+    |> yielder.take(n_children)
+    |> yielder.fold(#(0, []), fn(acc: #(Int, List(Node)), _) {
       let #(offset, nodes) = acc
       let #(consumed, child_node) =
         parse_tree(
@@ -53,13 +53,13 @@ fn parse_tree(input: List(Int)) -> #(Int, Node) {
   #(2 + consumed + n_metadata, Node(child_nodes, metadata))
 }
 
-fn walk_tree(node: Node) -> iterator.Iterator(Node) {
-  use <- iterator.yield(node)
+fn walk_tree(node: Node) -> yielder.Yielder(Node) {
+  use <- yielder.yield(node)
 
   node.children
-  |> iterator.from_list()
-  |> iterator.map(walk_tree)
-  |> iterator.flatten()
+  |> yielder.from_list()
+  |> yielder.map(walk_tree)
+  |> yielder.flatten()
 }
 
 fn node_value(node: Node) -> Int {
@@ -84,11 +84,11 @@ fn solve_a(input: Input) -> Option(String) {
   |> parse_tree()
   |> pair.second()
   |> walk_tree()
-  |> iterator.flat_map(fn(node) {
+  |> yielder.flat_map(fn(node) {
     node.metadata
-    |> iterator.from_list()
+    |> yielder.from_list()
   })
-  |> iterator.reduce(int.add)
+  |> yielder.reduce(int.add)
   |> result.map(int.to_string)
   |> option.from_result()
 }
