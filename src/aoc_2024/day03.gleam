@@ -1,6 +1,6 @@
 import gleam/int
 import gleam/list
-import gleam/option.{type Option}
+import gleam/option
 import gleam/pair
 import gleam/regexp
 import gleam/result
@@ -42,7 +42,7 @@ fn parse(data: List(String)) -> Input {
   }
 }
 
-fn solve_a(input: Input) -> Option(String) {
+fn solve_a(input: Input) -> Int {
   input
   |> list.map(fn(instruction) {
     case instruction {
@@ -51,11 +51,9 @@ fn solve_a(input: Input) -> Option(String) {
     }
   })
   |> int.sum()
-  |> int.to_string()
-  |> option.Some
 }
 
-fn solve_b(input: Input) -> Option(String) {
+fn solve_b(input: Input) -> Int {
   input
   |> list.fold(#(True, 0), fn(acc, instruction) {
     case acc, instruction {
@@ -66,8 +64,6 @@ fn solve_b(input: Input) -> Option(String) {
     }
   })
   |> pair.second()
-  |> int.to_string()
-  |> option.Some
 }
 
 pub fn main() {

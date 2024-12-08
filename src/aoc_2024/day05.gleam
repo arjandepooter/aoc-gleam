@@ -1,7 +1,7 @@
 import gleam/dict.{type Dict}
 import gleam/int
 import gleam/list
-import gleam/option.{type Option}
+import gleam/option
 import gleam/order.{type Order}
 import gleam/pair
 import gleam/result
@@ -94,18 +94,16 @@ fn get_middle_page(update: List(Int)) -> Int {
   |> result.unwrap(0)
 }
 
-fn solve_a(input: Input) -> Option(String) {
+fn solve_a(input: Input) -> Int {
   let #(deps, updates) = input
 
   updates
   |> list.filter(is_valid_update(_, deps))
   |> list.map(get_middle_page)
   |> int.sum()
-  |> int.to_string()
-  |> option.Some
 }
 
-fn solve_b(input: Input) -> Option(String) {
+fn solve_b(input: Input) -> Int {
   let #(deps, updates) = input
   let cmp = page_compare(deps)
 
@@ -114,8 +112,6 @@ fn solve_b(input: Input) -> Option(String) {
   |> list.map(list.sort(_, cmp))
   |> list.map(get_middle_page)
   |> int.sum()
-  |> int.to_string()
-  |> option.Some
 }
 
 pub fn main() {

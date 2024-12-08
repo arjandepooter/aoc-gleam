@@ -26,3 +26,7 @@ pub fn sub(self: Point, vec: vector.Vector) -> Point {
   |> vector.negate()
   |> add(self, _)
 }
+
+pub fn diff(self: Point, other: Point) -> vector.Vector {
+  vector.Vector(other.x - self.x, other.y - self.y)
+}

@@ -1,7 +1,7 @@
 import gleam/dynamic
+import gleam/int
 import gleam/io
 import gleam/list
-import gleam/option.{type Option}
 import gleam/result
 import gleam/string
 import gleam/yielder
@@ -22,10 +22,26 @@ fn stdin() -> yielder.Yielder(String) {
   |> yielder.map(result.unwrap(_, ""))
 }
 
+fn solution_to_string(solution: dynamic.Dynamic) -> String {
+  let parser =
+    dynamic.any([
+      dynamic.string,
+      fn(d) {
+        d
+        |> dynamic.int()
+        |> result.map(int.to_string)
+      },
+    ])
+
+  solution
+  |> parser()
+  |> result.lazy_unwrap(fn() { panic as "Solution should return String or Int" })
+}
+
 pub fn run_solutions(
   parser: fn(List(String)) -> input,
-  solve_a: fn(input) -> Option(String),
-  solve_b: fn(input) -> Option(String),
+  solve_a: fn(input) -> a,
+  solve_b: fn(input) -> b,
 ) {
   let input =
     stdin()
@@ -36,11 +52,13 @@ pub fn run_solutions(
   let solution_a =
     input
     |> solve_a()
-    |> option.unwrap("Unimplemented")
+    |> dynamic.from()
+
   let solution_b =
     input
     |> solve_b()
-    |> option.unwrap("Unimplemented")
-  io.println("Part 1: " <> solution_a)
-  io.println("Part 2: " <> solution_b)
+    |> dynamic.from()
+
+  io.println("Part 1: " <> solution_to_string(solution_a))
+  io.println("Part 2: " <> solution_to_string(solution_b))
 }

@@ -1,8 +1,6 @@
 import gleam/dict.{type Dict}
 import gleam/function
-import gleam/int
 import gleam/list
-import gleam/option.{type Option}
 import gleam/result
 import gleam/string
 import helpers
@@ -44,7 +42,7 @@ fn find_word(
   }
 }
 
-fn solve_a(input: Input) -> Option(String) {
+fn solve_a(input: Input) -> Int {
   let directions =
     {
       use dx <- list.flat_map(list.range(-1, 1))
@@ -64,8 +62,6 @@ fn solve_a(input: Input) -> Option(String) {
     find_word(pos, input, dir, "XMAS")
   }
   |> list.count(function.identity)
-  |> int.to_string()
-  |> option.Some
 }
 
 fn is_x_mas(pos: Point, grid: Dict(Point, String)) -> Bool {
@@ -90,12 +86,10 @@ fn is_x_mas(pos: Point, grid: Dict(Point, String)) -> Bool {
   }
 }
 
-fn solve_b(input: Input) -> Option(String) {
+fn solve_b(input: Input) -> Int {
   input
   |> dict.keys()
   |> list.count(is_x_mas(_, input))
-  |> int.to_string()
-  |> option.Some
 }
 
 pub fn main() {
