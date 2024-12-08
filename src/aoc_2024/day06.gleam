@@ -1,7 +1,5 @@
 import gleam/dict.{type Dict}
-import gleam/int
 import gleam/list
-import gleam/option.{type Option}
 import gleam/pair
 import gleam/result
 import gleam/set.{type Set}
@@ -99,18 +97,16 @@ fn find_path(
   }
 }
 
-fn solve_a(input: Input) -> Option(String) {
+fn solve_a(input: Input) -> Int {
   let Input(grid, pos, dir) = input
 
   grid
   |> find_path(pos, dir, new_path())
   |> path_points()
   |> set.size()
-  |> int.to_string()
-  |> option.Some
 }
 
-fn solve_b(input: Input) -> Option(String) {
+fn solve_b(input: Input) -> Int {
   let Input(grid, pos, dir) = input
 
   let points =
@@ -128,8 +124,6 @@ fn solve_b(input: Input) -> Option(String) {
     |> is_infinite
   })
   |> list.length
-  |> int.to_string
-  |> option.Some
 }
 
 pub fn main() {

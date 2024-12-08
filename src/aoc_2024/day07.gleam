@@ -1,6 +1,5 @@
 import gleam/int
 import gleam/list
-import gleam/option.{type Option}
 import gleam/pair
 import gleam/result
 import gleam/string
@@ -80,7 +79,7 @@ fn concat(a: Int, b: Int) -> Int {
   |> result.unwrap(0)
 }
 
-fn solve_a(input: Input) -> Option(String) {
+fn solve_a(input: Input) -> Int {
   input
   |> list.filter(fn(pair) {
     let #(result, values) = pair
@@ -88,11 +87,9 @@ fn solve_a(input: Input) -> Option(String) {
   })
   |> list.map(pair.first)
   |> int.sum()
-  |> int.to_string()
-  |> option.Some
 }
 
-fn solve_b(input: Input) -> Option(String) {
+fn solve_b(input: Input) -> Int {
   input
   |> list.filter(fn(pair) {
     let #(result, values) = pair
@@ -100,8 +97,6 @@ fn solve_b(input: Input) -> Option(String) {
   })
   |> list.map(pair.first)
   |> int.sum()
-  |> int.to_string()
-  |> option.Some
 }
 
 pub fn main() {

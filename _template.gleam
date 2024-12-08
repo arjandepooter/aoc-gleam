@@ -1,4 +1,3 @@
-import gleam/option.{type Option}
 import helpers
 
 type Input =
@@ -8,12 +7,12 @@ fn parse(data: List(String)) -> Input {
   todo
 }
 
-fn solve_a(input: Input) -> Option(String) {
-  option.None
+fn solve_a(input: Input) -> Int {
+  -1
 }
 
-fn solve_b(input: Input) -> Option(String) {
-  option.None
+fn solve_b(input: Input) -> Int {
+  -1
 }
 
 pub fn main() {

@@ -1,6 +1,5 @@
 import gleam/int
 import gleam/list
-import gleam/option.{type Option}
 import gleam/pair
 import gleam/result
 import gleam/string
@@ -79,7 +78,7 @@ fn node_value(node: Node) -> Int {
   }
 }
 
-fn solve_a(input: Input) -> Option(String) {
+fn solve_a(input: Input) -> Int {
   input
   |> parse_tree()
   |> pair.second()
@@ -89,17 +88,14 @@ fn solve_a(input: Input) -> Option(String) {
     |> yielder.from_list()
   })
   |> yielder.reduce(int.add)
-  |> result.map(int.to_string)
-  |> option.from_result()
+  |> result.unwrap(0)
 }
 
-fn solve_b(input: Input) -> Option(String) {
+fn solve_b(input: Input) -> Int {
   input
   |> parse_tree()
   |> pair.second()
   |> node_value()
-  |> int.to_string()
-  |> option.Some()
 }
 
 pub fn main() {

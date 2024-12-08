@@ -1,6 +1,5 @@
 import gleam/int
 import gleam/list
-import gleam/option.{type Option}
 import gleam/result
 import gleam/string
 import helpers
@@ -28,7 +27,7 @@ fn parse(data: List(String)) -> Input {
   #(l1, l2)
 }
 
-fn solve_a(input: Input) -> Option(String) {
+fn solve_a(input: Input) -> Int {
   let #(l1, l2) = input
   let assert [l1, l2] =
     [l1, l2]
@@ -41,11 +40,9 @@ fn solve_a(input: Input) -> Option(String) {
     int.absolute_value(n1 - n2)
   })
   |> int.sum()
-  |> int.to_string()
-  |> option.Some
 }
 
-fn solve_b(input: Input) -> Option(String) {
+fn solve_b(input: Input) -> Int {
   let #(l1, l2) = input
 
   {
@@ -57,8 +54,6 @@ fn solve_b(input: Input) -> Option(String) {
     counts * n1
   }
   |> int.sum()
-  |> int.to_string()
-  |> option.Some
 }
 
 pub fn main() {

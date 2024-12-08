@@ -1,7 +1,6 @@
 import gleam/function
 import gleam/int
 import gleam/list
-import gleam/option.{type Option}
 import gleam/result
 import gleam/string
 import helpers
@@ -37,12 +36,10 @@ fn is_safe(report: List(Int)) -> Bool {
   |> list.all(function.identity)
 }
 
-fn solve_a(input: Input) -> Option(String) {
+fn solve_a(input: Input) -> Int {
   input
   |> list.filter(is_safe)
   |> list.length()
-  |> int.to_string()
-  |> option.Some()
 }
 
 fn is_tolerant_safe(report: List(Int)) -> Bool {
@@ -55,12 +52,10 @@ fn is_tolerant_safe(report: List(Int)) -> Bool {
   |> list.any(is_safe)
 }
 
-fn solve_b(input: Input) -> Option(String) {
+fn solve_b(input: Input) -> Int {
   input
   |> list.filter(is_tolerant_safe)
   |> list.length()
-  |> int.to_string()
-  |> option.Some()
 }
 
 pub fn main() {

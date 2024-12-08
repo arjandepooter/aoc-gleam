@@ -185,18 +185,15 @@ fn find_time(state: State, input: Input) -> Int {
   }
 }
 
-fn solve_a(input: Input) -> option.Option(String) {
+fn solve_a(input: Input) -> String {
   input
   |> find_path([], _)
   |> string.concat()
-  |> option.Some()
 }
 
-fn solve_b(input: Input) -> option.Option(String) {
+fn solve_b(input: Input) -> Int {
   new_state()
   |> find_time(input)
-  |> int.to_string()
-  |> option.Some()
 }
 
 pub fn main() {
