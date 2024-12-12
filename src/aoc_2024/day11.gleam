@@ -1,6 +1,6 @@
 import gleam/dict.{type Dict}
+import gleam/float
 import gleam/int
-import gleam/io
 import gleam/list
 import gleam/option
 import gleam/result
@@ -21,21 +21,23 @@ fn parse(data: List(String)) -> Input {
 }
 
 fn split(n: Int) -> #(Int, Int) {
-  let s = int.to_string(n)
-  let offset = string.length(s) / 2
-  let a = s |> string.drop_end(offset) |> int_utils.parse_or_zero()
-  let b = s |> string.drop_start(offset) |> int_utils.parse_or_zero()
+  let d =
+    n
+    |> int_utils.number_of_digits()
+    |> int.divide(2)
+    |> result.unwrap(1)
+    |> int.to_float()
+    |> int.power(10, _)
+    |> result.unwrap(1.0)
+    |> float.truncate()
 
-  #(a, b)
+  #(n / d, n % d)
 }
 
 fn grow(lst: List(Int)) -> List(Int) {
   use n <- list.flat_map(lst)
 
-  let num_digits =
-    n
-    |> int.to_string()
-    |> string.length()
+  let num_digits = int_utils.number_of_digits(n)
 
   case n, int.is_even(num_digits) {
     0, _ -> [1]
@@ -78,10 +80,12 @@ fn counting_grow(lst: Dict(Int, Int)) -> Dict(Int, Int) {
 
 fn solve_a(input: Input) -> Int {
   input
-  |> yielder.iterate(grow)
+  |> to_count()
+  |> yielder.iterate(counting_grow)
   |> yielder.at(25)
-  |> result.unwrap([])
-  |> list.length()
+  |> result.unwrap(dict.new())
+  |> dict.values()
+  |> int.sum()
 }
 
 fn solve_b(input: Input) -> Int {
