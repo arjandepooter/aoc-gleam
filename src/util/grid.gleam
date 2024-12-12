@@ -23,12 +23,7 @@ pub fn filter_neighbours(
   grid: Grid(a),
   with: fn(Point, a) -> Bool,
 ) -> List(#(Point, a)) {
-  use direction <- list.filter_map([
-    vector.Vector(1, 0),
-    vector.Vector(0, 1),
-    vector.Vector(-1, 0),
-    vector.Vector(0, -1),
-  ])
+  use direction <- list.filter_map(vector.orthogonal_directions)
 
   let next_point =
     point
