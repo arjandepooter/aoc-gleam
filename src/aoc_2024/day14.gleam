@@ -85,7 +85,7 @@ fn solve_a(input: Input) -> Int {
 fn solve_b(input: Input) -> Int {
   list.range(0, width * height)
   |> list.map(fn(a) { #(a, step(input, a) |> safety_factor) })
-  |> list_utils.min_by_key(fn(item) { item.1 })
+  |> list_utils.min_by_key(pair.second)
   |> result.map(pair.first)
   |> result.unwrap(0)
 }
