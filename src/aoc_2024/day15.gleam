@@ -8,13 +8,13 @@ import helpers
 import util/grid
 import util/list_utils
 import util/point
+import util/util
 import util/vector
 
 type Cell {
   Wall
   Box
-  BoxLeft
-  BoxRight
+  SplitBox(left: Bool)
 }
 
 type Move {
@@ -98,7 +98,7 @@ fn score(state: State) -> Int {
   |> list.filter_map(fn(item) {
     case item {
       #(point, Box) -> Ok(gps(point))
-      #(point, BoxLeft) -> Ok(gps(point))
+      #(point, SplitBox(True)) -> Ok(gps(point))
       _ -> Error(Nil)
     }
   })
@@ -120,19 +120,19 @@ fn detect_boxes(
       |> detect_boxes(move)
       |> result.map(list.prepend(_, #(next, Box)))
     }
-    Ok(BoxLeft) -> {
-      case move {
-        Right -> {
+    Ok(SplitBox(left)) -> {
+      case move, left {
+        Right, True | Left, False -> {
           let next_next = move_point(next, move)
           State(grid, next_next)
           |> detect_boxes(move)
           |> result.map(list.append(_, [
-            #(next, BoxLeft),
-            #(next_next, BoxRight),
+            #(next, SplitBox(left)),
+            #(next_next, SplitBox(!left)),
           ]))
         }
-        Up | Down -> {
-          let other = move_point(next, Right)
+        Up, _ | Down, _ -> {
+          let other = move_point(next, util.cond(left, Right, Left))
 
           State(grid, next)
           |> detect_boxes(move)
@@ -141,36 +141,14 @@ fn detect_boxes(
             |> detect_boxes(move)
             |> result.map(list.append(_, l))
           })
-          |> result.map(list.append(_, [#(next, BoxLeft), #(other, BoxRight)]))
+          |> result.map(list.append(_, [
+            #(next, SplitBox(left)),
+            #(other, SplitBox(!left)),
+          ]))
         }
-        _ -> panic
+        _, _ -> panic
       }
     }
-    Ok(BoxRight) ->
-      case move {
-        Left -> {
-          let next_next = move_point(next, move)
-          State(grid, next_next)
-          |> detect_boxes(move)
-          |> result.map(list.append(_, [
-            #(next_next, BoxLeft),
-            #(next, BoxRight),
-          ]))
-        }
-        Up | Down -> {
-          let other = move_point(next, Left)
-
-          State(grid, next)
-          |> detect_boxes(move)
-          |> result.then(fn(l) {
-            State(grid, other)
-            |> detect_boxes(move)
-            |> result.map(list.append(_, l))
-          })
-          |> result.map(list.append(_, [#(next, BoxRight), #(other, BoxLeft)]))
-        }
-        _ -> panic
-      }
   }
 }
 
@@ -220,7 +198,10 @@ fn expand(state: State) -> State {
 
       case dict.get(grid, point) {
         Ok(Wall) -> #(offset + 1, [#(op1, Wall), #(op2, Wall)])
-        Ok(Box) -> #(offset + 1, [#(op1, BoxLeft), #(op2, BoxRight)])
+        Ok(Box) -> #(offset + 1, [
+          #(op1, SplitBox(True)),
+          #(op2, SplitBox(False)),
+        ])
         _ -> #(offset + 1, [])
       }
     }
