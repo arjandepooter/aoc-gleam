@@ -1,3 +1,5 @@
+import gleam/int
+import gleam/result
 import util/int_utils
 
 pub type Vector {
@@ -33,6 +35,19 @@ pub fn rotate_cw(vector: Vector) -> Vector {
 
 pub fn rotate_ccw(vector: Vector) -> Vector {
   Vector(vector.dy, -vector.dx)
+}
+
+pub fn to_unit(vector: Vector) -> Vector {
+  let x =
+    vector.dx
+    |> int.floor_divide(vector.dx)
+    |> result.unwrap(0)
+  let y =
+    vector.dy
+    |> int.floor_divide(vector.dy)
+    |> result.unwrap(0)
+
+  Vector(x, y)
 }
 
 pub fn normalize(vec: Vector) -> Vector {

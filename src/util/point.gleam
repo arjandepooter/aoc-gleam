@@ -30,3 +30,7 @@ pub fn sub(self: Point, vec: vector.Vector) -> Point {
 pub fn diff(self: Point, other: Point) -> vector.Vector {
   vector.Vector(other.x - self.x, other.y - self.y)
 }
+
+pub fn manhattan(self: Point, other: Point) -> Int {
+  int.absolute_value(self.x - other.x) + int.absolute_value(self.y - other.y)
+}
