@@ -20,6 +20,7 @@
           packages = [
             erlang_27
             gleam
+            just
           ];
         };
       }
