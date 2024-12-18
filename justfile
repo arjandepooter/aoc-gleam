@@ -6,7 +6,7 @@ default:
 
 init day=current_day year=current_year:
     #!/usr/bin/env sh
-    day=`printf "%+2s" {{day}} | tr ' ' '0'`
+    day=`printf "%02d" {{day}}`
     filename="src/aoc_{{year}}/day$day.gleam"
     if [ ! -f $filename ]; then 
         mkdir -p "src/aoc_{{year}}"
@@ -15,7 +15,7 @@ init day=current_day year=current_year:
 
 download day=current_day year=current_year: (init day year)
     #!/usr/bin/env sh
-    day=`printf "%+2s" {{day}} | tr ' ' '0'`
+    day=`printf "%02d" {{day}}`
     filename="inputs/{{year}}/day$day.txt"
     if [ ! -f $filename ]; then 
         mkdir -p "inputs/{{year}}"
@@ -24,5 +24,5 @@ download day=current_day year=current_year: (init day year)
 
 run day=current_day year=current_year: (download day year)
     #!/usr/bin/env sh
-    day=`printf "%+2s" {{day}} | tr ' ' '0'`
+    day=`printf "%02d" {{day}}`
     cat inputs/{{year}}/day$day.txt | gleam run --no-print-progress -m aoc_{{year}}/day$day
