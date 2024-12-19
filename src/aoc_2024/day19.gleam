@@ -1,3 +1,4 @@
+import gleam/bool
 import gleam/dict.{type Dict}
 import gleam/int
 import gleam/list
@@ -23,32 +24,29 @@ fn memoized(
   towels: List(String),
   cache: Dict(String, Int),
 ) -> #(Int, Dict(String, Int)) {
-  case dict.get(cache, pattern), pattern {
-    Ok(value), _ -> #(value, cache)
-    _, "" -> #(1, cache)
-    _, _ -> {
+  use <- bool.guard(string.is_empty(pattern), #(1, cache))
+
+  case dict.get(cache, pattern) {
+    Ok(value) -> #(value, cache)
+    _ -> {
       use acc, towel <- list.fold(towels, #(0, cache))
+      use <- bool.guard(!string.starts_with(pattern, towel), acc)
 
-      case string.starts_with(pattern, towel) {
-        False -> acc
-        True -> {
-          let #(n, cache) = acc
+      let #(n, cache) = acc
 
-          let next_pattern =
-            pattern
-            |> string.drop_start(string.length(towel))
+      let next_pattern =
+        pattern
+        |> string.drop_start(string.length(towel))
 
-          let #(result, cache) =
-            next_pattern
-            |> memoized(towels, cache)
+      let #(result, cache) =
+        next_pattern
+        |> memoized(towels, cache)
 
-          let cache =
-            cache
-            |> dict.insert(next_pattern, result)
+      let cache =
+        cache
+        |> dict.insert(next_pattern, result)
 
-          #(result + n, cache)
-        }
-      }
+      #(result + n, cache)
     }
   }
 }
