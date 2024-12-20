@@ -22,6 +22,7 @@
             gleam
             just
             hyperfine
+            watchexec
           ];
         };
       }
