@@ -77,26 +77,26 @@ fn find_path_costs(
   |> list.index_map(pair.new)
 }
 
-fn find_cheats(
+fn find_number_of_cheats(
   path: List(#(Point, Int)),
   max_cheat_duration: Int,
-  acc: List(#(Point, Point)),
-) -> List(#(Point, Point)) {
+) -> Int {
   case path {
-    [] -> acc
+    [] -> 0
     [#(from, cost), ..path] -> {
-      path
-      |> list.drop(cheat_threshold)
-      |> list.filter(fn(item) {
-        let #(point, other_cost) = item
-        let distance = point.manhattan(from, point)
+      let cheats =
+        path
+        |> list.drop(cheat_threshold)
+        |> list.filter(fn(item) {
+          let #(point, other_cost) = item
+          let distance = point.manhattan(from, point)
 
-        distance <= max_cheat_duration
-        && other_cost - cost - distance >= cheat_threshold
-      })
-      |> list.map(pair.map_second(_, fn(_) { from }))
-      |> list.append(acc)
-      |> find_cheats(path, max_cheat_duration, _)
+          distance <= max_cheat_duration
+          && other_cost - cost - distance >= cheat_threshold
+        })
+        |> list.length()
+
+      cheats + find_number_of_cheats(path, max_cheat_duration)
     }
   }
 }
@@ -106,8 +106,7 @@ fn solve_a(input: Input) -> Int {
 
   grid
   |> find_path_costs(start, finish)
-  |> find_cheats(2, [])
-  |> list.length()
+  |> find_number_of_cheats(2)
 }
 
 fn solve_b(input: Input) -> Int {
@@ -115,8 +114,7 @@ fn solve_b(input: Input) -> Int {
 
   grid
   |> find_path_costs(start, finish)
-  |> find_cheats(20, [])
-  |> list.length()
+  |> find_number_of_cheats(20)
 }
 
 pub fn main() {
