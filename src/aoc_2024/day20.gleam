@@ -1,5 +1,6 @@
 import gleam/bool
 import gleam/dict.{type Dict}
+import gleam/function
 import gleam/list
 import gleam/pair
 import gleam/result
@@ -68,40 +69,34 @@ fn find_path_costs(
   grid: Grid(Cell),
   start: Point,
   finish: Point,
-) -> Dict(Point, Int) {
+) -> List(#(Point, Int)) {
   grid
   |> find_path(start, finish, [start], set.from_list([start]))
   |> list.reverse()
   |> list.index_map(pair.new)
-  |> dict.from_list()
-}
-
-fn find_cheats_for_point(
-  from: Point,
-  path_costs: Dict(Point, Int),
-  max_cheat_duration: Int,
-) -> List(Point) {
-  let assert Ok(cost) = dict.get(path_costs, from)
-
-  path_costs
-  |> dict.filter(fn(point, other_cost) {
-    let distance = point.manhattan(from, point)
-    distance <= max_cheat_duration && other_cost - cost - distance >= 100
-  })
-  |> dict.keys()
 }
 
 fn find_cheats(
-  path_costs: Dict(Point, Int),
+  path: List(#(Point, Int)),
   max_cheat_duration: Int,
+  acc: List(#(Point, Point)),
 ) -> List(#(Point, Point)) {
-  path_costs
-  |> dict.keys()
-  |> list.flat_map(fn(point) {
-    point
-    |> find_cheats_for_point(path_costs, max_cheat_duration)
-    |> list.map(pair.new(point, _))
-  })
+  case path {
+    [] -> acc
+    [#(from, cost), ..path] -> {
+      path
+      |> list.drop(100)
+      |> list.filter(fn(item) {
+        let #(point, other_cost) = item
+        let distance = point.manhattan(from, point)
+
+        distance <= max_cheat_duration && other_cost - cost - distance >= 100
+      })
+      |> list.map(pair.map_second(_, fn(_) { from }))
+      |> list.append(acc)
+      |> find_cheats(path, max_cheat_duration, _)
+    }
+  }
 }
 
 fn solve_a(input: Input) -> Int {
@@ -109,8 +104,7 @@ fn solve_a(input: Input) -> Int {
 
   grid
   |> find_path_costs(start, finish)
-  |> find_cheats(2)
-  |> list.map(pair.first)
+  |> find_cheats(2, [])
   |> list.length()
 }
 
@@ -119,7 +113,7 @@ fn solve_b(input: Input) -> Int {
 
   grid
   |> find_path_costs(start, finish)
-  |> find_cheats(20)
+  |> find_cheats(20, [])
   |> list.length()
 }
 
