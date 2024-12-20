@@ -8,6 +8,8 @@ import helpers
 import util/grid.{type Grid}
 import util/point.{type Point}
 
+const cheat_threshold = 100
+
 type Cell {
   Wall
   Path
@@ -84,12 +86,13 @@ fn find_cheats(
     [] -> acc
     [#(from, cost), ..path] -> {
       path
-      |> list.drop(100)
+      |> list.drop(cheat_threshold)
       |> list.filter(fn(item) {
         let #(point, other_cost) = item
         let distance = point.manhattan(from, point)
 
-        distance <= max_cheat_duration && other_cost - cost - distance >= 100
+        distance <= max_cheat_duration
+        && other_cost - cost - distance >= cheat_threshold
       })
       |> list.map(pair.map_second(_, fn(_) { from }))
       |> list.append(acc)
