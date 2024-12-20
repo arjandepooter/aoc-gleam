@@ -26,3 +26,6 @@ run day=current_day year=current_year: (download day year)
     #!/usr/bin/env sh
     day=`printf "%02d" {{day}}`
     cat inputs/{{year}}/day$day.txt | gleam run --no-print-progress -m aoc_{{year}}/day$day
+
+benchmark day=current_day year=current_year:
+    hyperfine -w 1 "just run {{day}} {{year}}"

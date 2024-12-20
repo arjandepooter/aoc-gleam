@@ -21,6 +21,7 @@
             erlang_27
             gleam
             just
+            hyperfine
           ];
         };
       }
