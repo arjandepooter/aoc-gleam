@@ -1,6 +1,5 @@
 import gleam/bool
-import gleam/dict.{type Dict}
-import gleam/function
+import gleam/dict
 import gleam/list
 import gleam/pair
 import gleam/result
